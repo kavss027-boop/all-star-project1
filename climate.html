@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmEdu - Farmer Weather Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .date {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #E0F7FA;
+        }
+        
+        .region-weather {
+            grid-column: 1 / -1;
+        }
+        
+        .regions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .region {
+            padding: 15px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .region h3 {
+            margin-bottom: 10px;
+            color: #2E7D32;
+        }
+        
+        .weather-details {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .weather-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+            color: #FF9800;
+        }
+        
+        .advice {
+            padding: 10px;
+            background: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .alert {
+            background: #FFEBEE;
+            border-left: 4px solid #F44336;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .cultivation-days {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .day-card {
+            background: #FFF8E1;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #FFC107;
+        }
+        
+        .day-card h4 {
+            color: #FF9800;
+            margin-bottom: 10px;
+        }
+        
+        .map-overview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 300px;
+            background: #E8F5E9;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .rain-alert {
+            background: #E3F2FD;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .rain-alert i {
+            margin-right: 10px;
+            color: #2196F3;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .highlight {
+            background-color: #FFFF00;
+            padding: 2px 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> FarmEdu - Farmer Weather Assistant</h1>
+            <div class="date">Daily Weather Update: <span id="current-date">06 September 2025</span></div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card region-weather">
+                <h2><i class="fas fa-cloud-sun"></i> Regional Weather Summary</h2>
+                <div class="regions-container">
+                    <div class="region">
+                        <h3>North India (Punjab, Haryana, UP)</h3>
+                        <div class="weather-details">
+                            <i class="fas fa-sun weather-icon"></i>
+                            <div>
+                                <p>Sunny, 32°C / 22°C</p>
+                                <p>No rain, Wind: 8 km/h, Humidity: 45%</p>
+                            </div>
+                        </div>
+                        <div class="advice">
+                            <i class="fas fa-info-circle"></i> Good for wheat sowing and land preparation
+                        </div>
+                    </div>
+                    
+                    <div class="region">
+                        <h3>West India (Gujarat & Maharashtra)</h3>
+                        <div class="weather-details">
+                            <i class="fas fa-cloud-rain weather-icon"></i>
+                            <div>
+                                <p>Light rain, 30°C / 24°C</p>
+                                <p>60% rain chance, Wind: 12 km/h, Humidity: 75%</p>
+                            </div>
+                        </div>
+                        <div class="alert">
+                            <i class="fas fa-exclamation-triangle"></i> Avoid irrigation today due to expected rain
+                        </div>
+                    </div>
+                    
+                    <div class="region">
+                        <h3>South India (TN, Kerala)</h3>
+                        <div class="weather-details">
+                            <i class="fas fa-cloud-showers-heavy weather-icon"></i>
+                            <div>
+                                <p>Heavy rain, 28°C / 23°C</p>
+                                <p>90% rain chance, Wind: 18 km/h, Humidity: 85%</p>
+                            </div>
+                        </div>
+                        <div class="alert">
+                            <i class="fas fa-exclamation-triangle"></i> Delay harvesting activities
+                        </div>
+                    </div>
+                    
+                    <div class="region">
+                        <h3>East India (Bihar, WB, Odisha)</h3>
+                        <div class="weather-details">
+                            <i class="fas fa-cloud weather-icon"></i>
+                            <div>
+                                <p>Cloudy, 29°C / 23°C</p>
+                                <p>40% rain chance, Wind: 10 km/h, Humidity: 65%</p>
+                            </div>
+                        </div>
+                        <div class="advice">
+                            <i class="fas fa-info-circle"></i> Suitable for transplanting paddy seedlings
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-tint"></i> Rain Alerts</h2>
+                <div class="rain-alert">
+                    <i class="fas fa-cloud-rain"></i>
+                    <div>
+                        <h3>Heavy Rainfall Alert</h3>
+                        <p>South Tamil Nadu and Kerala on <span class="highlight">11th Sept</span></p>
+                    </div>
+                </div>
+                
+                <div class="rain-alert">
+                    <i class="fas fa-cloud-rain"></i>
+                    <div>
+                        <h3>Moderate Rainfall Alert</h3>
+                        <p>Coastal Karnataka, Kerala, and Assam from <span class="highlight">10th to 12th Sept</span></p>
+                    </div>
+                </div>
+                
+                <div class="rain-alert">
+                    <i class="fas fa-sun"></i>
+                    <div>
+                        <h3>No Rainfall</h3>
+                        <p>Northwest India will remain dry for the next 5-7 days</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-calendar-alt"></i> Best Cultivation Days This Week</h2>
+                <div class="cultivation-days">
+                    <div class="day-card">
+                        <h4>07-09 Sept</h4>
+                        <p>Suitable for sowing chickpea in dry regions</p>
+                    </div>
+                    
+                    <div class="day-card">
+                        <h4>10-12 Sept</h4>
+                        <p>Rain in central India - good for paddy fields</p>
+                    </div>
+                    
+                    <div class="day-card">
+                        <h4>07-10 Sept</h4>
+                        <p>Ideal for wheat sowing in North India</p>
+                    </div>
+                    
+                    <div class="day-card">
+                        <h4>08-11 Sept</h4>
+                        <p>Good for cotton sowing in Central India</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card map-overview">
+                <h2><i class="fas fa-map-marked-alt"></i> India Weather Map</h2>
+                <div class="map-container">
+                    <!-- Simplified map representation -->
+                    <div style="position: absolute; top: 10%; left: 20%; background: #FF5722; padding: 8px; border-radius: 5px; color: white;">Hot & Dry</div>
+                    <div style="position: absolute; top: 30%; left: 40%; background: #4CAF50; padding: 8px; border-radius: 5px; color: white;">Ideal for Farming</div>
+                    <div style="position: absolute; top: 70%; left: 30%; background: #2196F3; padding: 8px; border-radius: 5px; color: white;">Moderate Rain</div>
+                    <div style="position: absolute; top: 80%; left: 70%; background: #3F51B5; padding: 8px; border-radius: 5px; color: white;">Heavy Rain</div>
+                </div>
+                
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FF5722;"></div>
+                        <span>Hot & Dry</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4CAF50;"></div>
+                        <span>Ideal for Farming</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196F3;"></div>
+                        <span>Moderate Rain</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3F51B5;"></div>
+                        <span>Heavy Rain</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-tractor"></i> Practical Farming Advice</h2>
+            <ul style="list-style-type: none;">
+                <li style="padding: 10px; border-bottom: 1px solid #eee;"><i class="fas fa-check-circle" style="color: #4CAF50;"></i> <strong>North India:</strong> Good day for sowing wheat and irrigation in evening</li>
+                <li style="padding: 10px; border-bottom: 1px solid #eee;"><i class="fas fa-times-circle" style="color: #F44336;"></i> <strong>West India:</strong> Avoid irrigation today due to expected rain</li>
+                <li style="padding: 10px; border-bottom: 1px solid #eee;"><i class="fas fa-exclamation-triangle" style="color: #FF9800;"></i> <strong>South India:</strong> Delay harvesting of rice and pulses</li>
+                <li style="padding: 10px;"><i class="fas fa-check-circle" style="color: #4CAF50;"></i> <strong>Central India:</strong> Ideal day for sowing maize and cotton</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Updated daily at 6:00 AM | Information provided by FarmEdu Agricultural Service</p>
+            <p>Contact: support FarmEdu@gamil.com | Toll-free: 1800-123-4567</p>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const today = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('current-date').textContent = today.toLocaleDateString('en-IN', options);
+        
+        // Simple interactive functionality
+        document.querySelectorAll('.region').forEach(region => {
+            region.addEventListener('click', () => {
+                region.querySelector('.advice, .alert').style.display = 
+                    region.querySelector('.advice, .alert').style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic Farming Advisor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .logo {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #2575fc;
+            letter-spacing: 1px;
+        }
+
+        .navbar .nav-links a {
+            margin-left: 28px;
+            text-decoration: none;
+            color: #2575fc;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            padding: 8px 18px;
+            border-radius: 6px;
+        }
+
+        .navbar .nav-links a:hover {
+            background: #2575fc;
+            color: #fff;
+        }
+        
+        body {
+            background-color: #f5f9f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #4a8f3e;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .chat-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: #5da34e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+        
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f9fdf8;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            line-height: 1.5;
+        }
+        
+        .user-message {
+            background-color: #e6f7e6;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background-color: #f0f8eb;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        input:focus {
+            border-color: #5da34e;
+        }
+        
+        button {
+            background-color: #4a8f3e;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3d7833;
+        }
+        
+        .suggested-questions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .question-btn {
+            background-color: #e6f7e6;
+            color: #3d7833;
+            border: 1px solid #c5e3c5;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .question-btn:hover {
+            background-color: #d6edd6;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .suggested-questions {
+                grid-template-columns: 1fr;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i> FramEdu
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="crops.html">Crops</a>
+            <a href="farmer-dashboard.html">Farmer Dashboard</a>
+            <a href="suggestion.html">Suggestions</a>
+            <a href="doubtai.html">Doubt AI</a>
+        </div>
+    </nav>
+    <div class="container">
+        <header>
+            <h1>Organic Farming Advisor</h1>
+            <p class="tagline">Get practical, sustainable solutions for your farming questions</p>
+        </header>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                Ask me anything about organic farming
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    Hello! I'm your organic farming advisor. How can I help you today? You can ask me about composting, pest control, soil health, crop rotation, or any other organic farming topic.
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Type your farming question here..." autocomplete="off">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+        
+        <div class="suggested-questions">
+            <button class="question-btn" data-question="How do I make organic compost?">How do I make organic compost?</button>
+            <button class="question-btn" data-question="What are natural ways to control pests?">What are natural ways to control pests?</button>
+            <button class="question-btn" data-question="How can I improve my soil health naturally?">How can I improve my soil health naturally?</button>
+            <button class="question-btn" data-question="What crops are best for crop rotation?">What crops are best for crop rotation?</button>
+        </div>
+        
+        <footer>
+            <p>Organic Farming Advisor © 2023 | Providing sustainable solutions for farmers</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const questionBtns = document.querySelectorAll('.question-btn');
+            
+            // Sample responses database
+            const responses = {
+                'compost': {
+                    title: 'How to Make Organic Compost',
+                    steps: [
+                        'Choose a shady spot near a water source for your compost pile or bin',
+                        'Add brown materials (dry leaves, twigs) and green materials (vegetable scraps, grass clippings) in equal parts',
+                        'Moisten the pile as you build it - it should be damp like a wrung-out sponge',
+                        'Turn the pile every few weeks with a pitchfork to aerate it',
+                        'Your compost will be ready in 2-6 months when it\'s dark, crumbly, and smells earthy'
+                    ],
+                    tips: [
+                        'Chop larger materials to speed up decomposition',
+                        'Avoid adding meat, dairy, or diseased plants',
+                        'Cover the pile during heavy rain to prevent nutrient leaching'
+                    ]
+                },
+                'pest': {
+                    title: 'Natural Pest Control Methods',
+                    steps: [
+                        'Identify the specific pest causing damage',
+                        'Use companion planting - marigolds repel nematodes, basil repels flies and mosquitoes',
+                        'Make a natural spray with neem oil (2 tbsp), liquid soap (1 tsp), and water (1 gallon)',
+                        'Introduce beneficial insects like ladybugs and lacewings that eat aphids',
+                        'Use physical barriers like row covers or netting'
+                    ],
+                    tips: [
+                        'Plant diverse crops to avoid monoculture that attracts pests',
+                        'Regularly check plants for early signs of infestation',
+                        'Keep your garden clean of debris where pests might hide'
+                    ]
+                },
+                'soil': {
+                    title: 'Improving Soil Health Naturally',
+                    steps: [
+                        'Test your soil to understand its current pH and nutrient levels',
+                        'Add organic matter like compost or well-rotted manure',
+                        'Use cover crops like clover or vetch to fix nitrogen and prevent erosion',
+                        'Practice no-till farming to preserve soil structure and microbial life',
+                        'Apply organic mulch (straw, wood chips) to retain moisture and suppress weeds'
+                    ],
+                    tips: [
+                        'Rotate crops annually to prevent nutrient depletion',
+                        'Use green manure crops that are turned into the soil',
+                        'Maintain proper soil pH (6.0-7.0 for most crops) using lime or sulfur'
+                    ]
+                },
+                'rotation': {
+                    title: 'Effective Crop Rotation',
+                    steps: [
+                        'Group crops by family (nightshades, legumes, brassicas, etc.)',
+                        'Plan a 3-4 year rotation cycle before planting the same family in a bed',
+                        'Follow heavy feeders (tomatoes, corn) with soil builders (beans, peas)',
+                        'Then plant light feeders (onions, carrots) before returning to heavy feeders',
+                        'Keep a garden journal to track what was planted where each season'
+                    ],
+                    tips: [
+                        'Legumes (beans, peas) fix nitrogen in the soil',
+                        'Deep-rooted crops break up compacted soil layers',
+                        'Include cover crops in your rotation plan for fallow periods'
+                    ]
+                },
+                'default': {
+                    title: 'Organic Farming Advice',
+                    steps: [
+                        'I specialize in organic farming methods. Could you please provide more details about your specific situation?',
+                        'Please mention: 1) Your crop name, 2) Soil type, 3) Current season, and 4) Specific problem (if any)'
+                    ],
+                    tips: [
+                        'The more details you provide, the better advice I can give',
+                        'Organic methods often take time to show results but provide long-term benefits'
+                    ]
+                }
+            };
+            
+            // Function to add message to chat
+            function addMessage(message, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+                messageDiv.textContent = message;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Function to generate response
+            function generateResponse(question) {
+                question = question.toLowerCase();
+                
+                let response;
+                if (question.includes('compost')) response = responses.compost;
+                else if (question.includes('pest')) response = responses.pest;
+                else if (question.includes('soil')) response = responses.soil;
+                else if (question.includes('rotation')) response = responses.rotation;
+                else response = responses.default;
+                
+                let fullResponse = `🌱 ${response.title} 🌱\n\n`;
+                
+                fullResponse += "STEP-BY-STEP:\n";
+                response.steps.forEach((step, index) => {
+                    fullResponse += `${index + 1}. ${step}\n`;
+                });
+                
+                fullResponse += "\nEXTRA TIPS:\n";
+                response.tips.forEach((tip, index) => {
+                    fullResponse += `• ${tip}\n`;
+                });
+                
+                fullResponse += "\nRemember: Organic farming focuses on long-term soil health and ecosystem balance!";
+                
+                return fullResponse;
+            }
+            
+            // Event listener for send button
+            sendBtn.addEventListener('click', function() {
+                const question = userInput.value.trim();
+                if (question) {
+                    addMessage(question, true);
+                    userInput.value = '';
+                    
+                    // Simulate thinking delay
+                    setTimeout(() => {
+                        const response = generateResponse(question);
+                        addMessage(response, false);
+                    }, 1000);
+                }
+            });
+            
+            // Event listener for Enter key
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendBtn.click();
+                }
+            });
+            
+            // Event listeners for suggested questions
+            questionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    userInput.value = question;
+                    sendBtn.click();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FramEdu - Crop Farming Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar .logo {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #2575fc;
+            letter-spacing: 1px;
+        }
+        .navbar .nav-links a {
+            margin-left: 28px;
+            text-decoration: none;
+            color: #2575fc;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            padding: 8px 18px;
+            border-radius: 6px;
+        }
+        .navbar .nav-links a:hover {
+            background: #2575fc;
+            color: #fff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 32px 28px;
+        }
+        h1 {
+            text-align: center;
+            color: #2575fc;
+            margin-bottom: 24px;
+        }
+        .crop-select {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .crop-select select {
+            padding: 12px 18px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: 1px solid #2575fc;
+            outline: none;
+            color: #2575fc;
+            font-weight: 500;
+        }
+        .steps {
+            margin-top: 16px;
+        }
+        .step {
+            background: #f5f7fa;
+            border-left: 5px solid #2575fc;
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(38, 87, 252, 0.06);
+        }
+        .step-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #2575fc;
+            margin-bottom: 8px;
+        }
+        .step-desc {
+            font-size: 1rem;
+            color: #333;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i> FramEdu
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="crops.html">Crops</a>
+            <a href="farmer-dashboard.html">Farmer Dashboard</a>
+            <a href="suggestion.html">Suggestions</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h1><i class="fa-solid fa-seedling"></i> Crop Farming Guide</h1>
+        <div class="crop-select">
+            <label for="crop" style="margin-right:12px;font-weight:500;color:#2575fc;">Choose Crop:</label>
+            <select id="crop">
+                <option value="wheat">Wheat</option>
+                <option value="rice">Rice</option>
+                <option value="maize">Maize</option>
+                <option value="potato">Potato</option>
+                <option value="tomato">Tomato</option>
+            </select>
+        </div>
+        <div class="steps" id="steps"></div>
+    </div>
+    <script>
+        const cropSteps = {
+            wheat: [
+                { title: "Step 1: Land Preparation", desc: "Plough the field thoroughly and remove weeds. Level the soil for uniform irrigation." },
+                { title: "Step 2: Seed Selection & Sowing", desc: "Choose certified seeds. Sow seeds in rows with proper spacing, usually in November." },
+                { title: "Step 3: Irrigation", desc: "Provide first irrigation after 20-25 days of sowing. Subsequent irrigations at critical stages." },
+                { title: "Step 4: Fertilization", desc: "Apply nitrogen, phosphorus, and potassium fertilizers as per soil test recommendations." },
+                { title: "Step 5: Weed Management", desc: "Use manual weeding or recommended herbicides to control weeds." },
+                { title: "Step 6: Harvesting", desc: "Harvest when grains are hard and straw turns yellow, usually in April-May." }
+            ],
+            rice: [
+                { title: "Step 1: Nursery Preparation", desc: "Prepare nursery beds and sow pre-germinated seeds." },
+                { title: "Step 2: Transplanting", desc: "Transplant seedlings to the main field after 20-25 days." },
+                { title: "Step 3: Water Management", desc: "Maintain standing water (2-5 cm) in the field during growth." },
+                { title: "Step 4: Fertilization", desc: "Apply fertilizers in split doses as per crop stage." },
+                { title: "Step 5: Pest & Disease Control", desc: "Monitor regularly and use recommended pesticides/fungicides." },
+                { title: "Step 6: Harvesting", desc: "Harvest when grains are mature and golden yellow." }
+            ],
+            maize: [
+                { title: "Step 1: Land Preparation", desc: "Plough and level the field. Ensure good drainage." },
+                { title: "Step 2: Sowing", desc: "Sow seeds at proper depth and spacing, usually in June-July." },
+                { title: "Step 3: Fertilization", desc: "Apply basal and top-dress fertilizers as per soil test." },
+                { title: "Step 4: Irrigation", desc: "Irrigate at knee-high, tasseling, and grain-filling stages." },
+                { title: "Step 5: Weed Control", desc: "Remove weeds manually or use selective herbicides." },
+                { title: "Step 6: Harvesting", desc: "Harvest when cobs are dry and kernels are hard." }
+            ],
+            potato: [
+                { title: "Step 1: Land Preparation", desc: "Prepare loose, well-drained soil. Add organic manure." },
+                { title: "Step 2: Seed Cutting & Planting", desc: "Cut tubers into pieces with eyes. Plant in rows with spacing." },
+                { title: "Step 3: Irrigation", desc: "Keep soil moist but not waterlogged. Irrigate regularly." },
+                { title: "Step 4: Fertilization", desc: "Apply fertilizers rich in phosphorus and potassium." },
+                { title: "Step 5: Earthing Up", desc: "Cover stems with soil to promote tuber growth." },
+                { title: "Step 6: Harvesting", desc: "Harvest when leaves turn yellow and die back." }
+            ],
+            tomato: [
+                { title: "Step 1: Seedling Preparation", desc: "Grow seedlings in nursery for 25-30 days." },
+                { title: "Step 2: Transplanting", desc: "Transplant seedlings to main field with proper spacing." },
+                { title: "Step 3: Irrigation", desc: "Irrigate regularly, avoid waterlogging." },
+                { title: "Step 4: Fertilization", desc: "Apply organic and inorganic fertilizers as per requirement." },
+                { title: "Step 5: Staking & Pruning", desc: "Support plants with stakes and prune for better yield." },
+                { title: "Step 6: Harvesting", desc: "Harvest when fruits are fully red and ripe." }
+            ]
+        };
+
+        const cropSelect = document.getElementById('crop');
+        const stepsDiv = document.getElementById('steps');
+
+        function renderSteps(crop) {
+            stepsDiv.innerHTML = '';
+            cropSteps[crop].forEach((step, idx) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'step';
+                stepDiv.innerHTML = `<div class="step-title">${step.title}</div>
+                                     <div class="step-desc">${step.desc}</div>`;
+                stepsDiv.appendChild(stepDiv);
+            });
+        }
+
+        cropSelect.addEventListener('change', function() {
+            renderSteps(this.value);
+        });
+
+        // Initial render
+        renderSteps(cropSelect.value);
+    </script>
+</body>
