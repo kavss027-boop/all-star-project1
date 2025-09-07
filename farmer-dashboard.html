@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FramEdu - Farmer Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .logo {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #2575fc;
+            letter-spacing: 1px;
+        }
+
+        .navbar .nav-links a {
+            margin-left: 28px;
+            text-decoration: none;
+            color: #2575fc;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            padding: 8px 18px;
+            border-radius: 6px;
+        }
+
+        .navbar .nav-links a:hover {
+            background: #2575fc;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 32px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #2575fc;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2575fc;
+        }
+
+        .price-input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .recommendations {
+            grid-column: 1 / -1;
+            margin-top: 30px;
+        }
+
+        .recommendation-card {
+            background: #f8f9fa;
+            border-left: 5px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .recommendation-card h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-card .crop-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .crop-info-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .crop-info-item .label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .crop-info-item .value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .chart-container {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 32px;
+            margin-top: 30px;
+        }
+
+        .chart-container h2 {
+            color: #2575fc;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .price-trends {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .trend-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 24px;
+        }
+
+        .trend-card h3 {
+            color: #2575fc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .location-info {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .location-info h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .soil-type-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .soil-clay { background: #8d6e63; color: white; }
+        .soil-sandy { background: #ffb74d; color: white; }
+        .soil-loamy { background: #66bb6a; color: white; }
+        .soil-red { background: #e57373; color: white; }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        /* Tab Navigation Styles */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            margin: 0 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: #f0f8ff;
+            color: #2575fc;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 117, 252, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .embedded-content {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .embedded-content iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
+        /* AI Assistant Modal Styles */
+        .ai-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .ai-modal-content {
+            background-color: #f5f9f4;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            height: 90%;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .ai-modal-header {
+            background-color: #4a8f3e;
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close-ai {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .close-ai:hover {
+            opacity: 0.7;
+        }
+
+        .ai-chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f9fdf8;
+        }
+
+        .ai-message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            line-height: 1.5;
+        }
+
+        .ai-user-message {
+            background-color: #e6f7e6;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-bot-message {
+            background-color: #f0f8eb;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .ai-chat-input {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .ai-chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .ai-chat-input input:focus {
+            border-color: #5da34e;
+        }
+
+        .ai-chat-input button {
+            background-color: #4a8f3e;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .ai-chat-input button:hover {
+            background-color: #3d7833;
+        }
+
+        .ai-suggested-questions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background-color: #f9fdf8;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .ai-question-btn {
+            background-color: #e6f7e6;
+            color: #3d7833;
+            border: 1px solid #c5e3c5;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .ai-question-btn:hover {
+            background-color: #d6edd6;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-trends {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-modal-content {
+                width: 95%;
+                height: 95%;
+                margin: 2.5% auto;
+            }
+
+            .ai-suggested-questions {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-navigation {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            .tab-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+                margin: 2px;
+            }
+
+            .embedded-content iframe {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i> FramEdu
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="crops.html">Crops</a>
+            <a href="farmer-dashboard.html">Dashboard</a>
+            <a href="suggestion.html">Suggestions</a>
+            <a href="#" onclick="openAIAssistant()">AI Assistant</a>
+            <a href="doubtai.html" target="_blank">Doubt AI</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-tractor"></i> Farmer Dashboard</h1>
+            <p>Input your crop prices and location to get personalized recommendations</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="openTab(event, 'dashboard-tab')">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'crop-advice-tab')">
+                <i class="fas fa-seedling"></i> Crop Advice
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'climate-tab')">
+                <i class="fas fa-cloud-sun"></i> Climate
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'materials-tab')">
+                <i class="fas fa-leaf"></i> Organic Materials
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'market-prices-tab')">
+                <i class="fas fa-rupee-sign"></i> Market Prices
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'quiz-tab')">
+                <i class="fas fa-graduation-cap"></i> Quiz
+            </button>
+        </div>
+
+        <!-- Dashboard Tab Content -->
+        <div id="dashboard-tab" class="tab-content active">
+            <div class="dashboard-grid">
+            <!-- Location Information Card -->
+            <div class="card">
+                <h2><i class="fas fa-map-marker-alt"></i> Location Information</h2>
+                
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <select id="state" onchange="updateDistricts()">
+                        <option value="">Select State</option>
+                        <option value="maharashtra">Maharashtra</option>
+                        <option value="karnataka">Karnataka</option>
+                        <option value="tamil-nadu">Tamil Nadu</option>
+                        <option value="punjab">Punjab</option>
+                        <option value="haryana">Haryana</option>
+                        <option value="uttar-pradesh">Uttar Pradesh</option>
+                        <option value="gujarat">Gujarat</option>
+                        <option value="rajasthan">Rajasthan</option>
+                        <option value="west-bengal">West Bengal</option>
+                        <option value="andhra-pradesh">Andhra Pradesh</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <select id="district" onchange="updateSoilType()">
+                        <option value="">Select District</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="soil-type">Soil Type</label>
+                    <select id="soil-type">
+                        <option value="">Select Soil Type</option>
+                        <option value="clay">Clay Soil</option>
+                        <option value="sandy">Sandy Soil</option>
+                        <option value="loamy">Loamy Soil</option>
+                        <option value="red">Red Soil</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="farm-size">Farm Size (acres)</label>
+                    <input type="number" id="farm-size" placeholder="Enter farm size in acres" min="0" step="0.1">
+                </div>
+
+                <div class="location-info" id="location-info" style="display: none;">
+                    <h4>Location Analysis</h4>
+                    <p id="climate-info"></p>
+                    <p id="rainfall-info"></p>
+                    <span id="soil-indicator" class="soil-type-indicator"></span>
+                </div>
+            </div>
+
+            <!-- Price Input Card -->
+            <div class="card">
+                <h2><i class="fas fa-rupee-sign"></i> Market Price Input</h2>
+                
+                <div class="form-group">
+                    <label>Current Market Prices (per quintal)</label>
+                </div>
+
+                <div class="price-input-grid">
+                    <div class="form-group">
+                        <label for="rice-price">Rice</label>
+                        <input type="number" id="rice-price" placeholder="₹ per quintal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="wheat-price">Wheat</label>
+                        <input type="number" id="wheat-price" placeholder="₹ per quintal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="sugarcane-price">Sugarcane</label>
+                        <input type="number" id="sugarcane-price" placeholder="₹ per quintal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="cotton-price">Cotton</label>
+                        <input type="number" id="cotton-price" placeholder="₹ per quintal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="soybean-price">Soybean</label>
+                        <input type="number" id="soybean-price" placeholder="₹ per quintal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="maize-price">Maize</label>
+                        <input type="number" id="maize-price" placeholder="₹ per quintal" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="investment-budget">Investment Budget (₹)</label>
+                    <input type="number" id="investment-budget" placeholder="Enter your investment budget" min="0">
+                </div>
+
+                <button class="btn" onclick="generateRecommendations()">
+                    <i class="fas fa-calculator"></i> Get Recommendations
+                </button>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="card recommendations" id="recommendations-section" style="display: none;">
+            <h2><i class="fas fa-lightbulb"></i> Crop Recommendations</h2>
+            <div id="recommendations-container"></div>
+        </div>
+
+        <!-- Price Trends Charts -->
+        <div class="chart-container">
+            <h2><i class="fas fa-chart-line"></i> Market Price Trends</h2>
+            <div class="price-trends">
+                <div class="trend-card">
+                    <h3>Price Comparison</h3>
+                    <canvas id="priceChart" width="400" height="200"></canvas>
+                </div>
+                <div class="trend-card">
+                    <h3>Profitability Analysis</h3>
+                    <canvas id="profitChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Crop Advice Tab Content -->
+        <div id="crop-advice-tab" class="tab-content">
+            <div class="embedded-content">
+                <iframe src="tech.html" title="Modern Farming Techniques"></iframe>
+            </div>
+        </div>
+
+        <!-- Climate Tab Content -->
+        <div id="climate-tab" class="tab-content">
+            <div class="embedded-content">
+                <iframe src="climate.html" title="Weather and Climate Information"></iframe>
+            </div>
+        </div>
+
+        <!-- Organic Materials Tab Content -->
+        <div id="materials-tab" class="tab-content">
+            <div class="embedded-content">
+                <iframe src="material.html" title="Organic Farming Materials"></iframe>
+            </div>
+        </div>
+
+        <!-- Market Prices Tab Content -->
+        <div id="market-prices-tab" class="tab-content">
+            <div class="embedded-content">
+                <iframe src="web.html" title="Market Prices and Crop Information"></iframe>
+            </div>
+        </div>
+
+        <!-- Quiz Tab Content -->
+        <div id="quiz-tab" class="tab-content">
+            <div class="embedded-content">
+                <iframe src="quiz.html" title="Agriculture Quiz"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Modal -->
+    <div id="aiModal" class="ai-modal">
+        <div class="ai-modal-content">
+            <div class="ai-modal-header">
+                <h2><i class="fas fa-robot"></i> AI Farming Assistant</h2>
+                <button class="close-ai" onclick="closeAIAssistant()">&times;</button>
+            </div>
+            <div class="ai-chat-container">
+                <div class="ai-chat-messages" id="ai-chat-messages">
+                    <div class="ai-message ai-bot-message">
+                        Hello! I'm your AI farming assistant. How can I help you today? You can ask me about composting, pest control, soil health, crop rotation, or any other farming topic.
+                    </div>
+                </div>
+                <div class="ai-chat-input">
+                    <input type="text" id="ai-user-input" placeholder="Type your farming question here..." autocomplete="off">
+                    <button id="ai-send-btn">Send</button>
+                </div>
+                <div class="ai-suggested-questions">
+                    <button class="ai-question-btn" data-question="How do I make organic compost?">How do I make organic compost?</button>
+                    <button class="ai-question-btn" data-question="What are natural ways to control pests?">What are natural ways to control pests?</button>
+                    <button class="ai-question-btn" data-question="How can I improve my soil health naturally?">How can I improve my soil health naturally?</button>
+                    <button class="ai-question-btn" data-question="What crops are best for crop rotation?">What crops are best for crop rotation?</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // District data for different states
+        const districtData = {
+            'maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Kolhapur', 'Sangli', 'Satara'],
+            'karnataka': ['Bangalore', 'Mysore', 'Hubli', 'Mangalore', 'Belgaum', 'Gulbarga', 'Davanagere', 'Bellary', 'Bijapur', 'Tumkur'],
+            'tamil-nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Erode', 'Vellore', 'Thoothukudi', 'Dindigul'],
+            'punjab': ['Amritsar', 'Ludhiana', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Firozpur', 'Batala', 'Pathankot', 'Moga'],
+            'haryana': ['Gurgaon', 'Faridabad', 'Panipat', 'Ambala', 'Yamunanagar', 'Karnal', 'Hisar', 'Rohtak', 'Sonipat', 'Panchkula'],
+            'uttar-pradesh': ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Meerut', 'Allahabad', 'Bareilly', 'Ghaziabad', 'Noida', 'Moradabad'],
+            'gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar', 'Nadiad', 'Morbi'],
+            'rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Bikaner', 'Ajmer', 'Bharatpur', 'Alwar', 'Bhilwara', 'Sikar'],
+            'west-bengal': ['Kolkata', 'Asansol', 'Siliguri', 'Durgapur', 'Bardhaman', 'Malda', 'Bahrampur', 'Habra', 'Kharagpur', 'Shantipur'],
+            'andhra-pradesh': ['Hyderabad', 'Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Rajahmundry', 'Tirupati', 'Kadapa', 'Anantapur']
+        };
+
+        // Climate and soil data
+        const locationData = {
+            'maharashtra': { climate: 'Tropical', rainfall: '600-2500mm', suitableCrops: ['Sugarcane', 'Cotton', 'Soybean', 'Rice', 'Wheat'] },
+            'karnataka': { climate: 'Tropical', rainfall: '500-3000mm', suitableCrops: ['Rice', 'Sugarcane', 'Cotton', 'Maize', 'Ragi'] },
+            'tamil-nadu': { climate: 'Tropical', rainfall: '1000-4000mm', suitableCrops: ['Rice', 'Sugarcane', 'Cotton', 'Groundnut', 'Coconut'] },
+            'punjab': { climate: 'Semi-arid', rainfall: '400-800mm', suitableCrops: ['Wheat', 'Rice', 'Cotton', 'Sugarcane', 'Maize'] },
+            'haryana': { climate: 'Semi-arid', rainfall: '300-600mm', suitableCrops: ['Wheat', 'Rice', 'Cotton', 'Sugarcane', 'Mustard'] },
+            'uttar-pradesh': { climate: 'Subtropical', rainfall: '600-1200mm', suitableCrops: ['Wheat', 'Rice', 'Sugarcane', 'Potato', 'Maize'] },
+            'gujarat': { climate: 'Arid to Semi-arid', rainfall: '200-1000mm', suitableCrops: ['Cotton', 'Groundnut', 'Wheat', 'Sugarcane', 'Maize'] },
+            'rajasthan': { climate: 'Arid', rainfall: '200-600mm', suitableCrops: ['Wheat', 'Cotton', 'Mustard', 'Bajra', 'Guar'] },
+            'west-bengal': { climate: 'Tropical', rainfall: '1200-3000mm', suitableCrops: ['Rice', 'Jute', 'Sugarcane', 'Potato', 'Wheat'] },
+            'andhra-pradesh': { climate: 'Tropical', rainfall: '800-2000mm', suitableCrops: ['Rice', 'Cotton', 'Sugarcane', 'Groundnut', 'Chilli'] }
+        };
+
+        function updateDistricts() {
+            const state = document.getElementById('state').value;
+            const districtSelect = document.getElementById('district');
+            
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            
+            if (state && districtData[state]) {
+                districtData[state].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.toLowerCase();
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateSoilType() {
+            const state = document.getElementById('state').value;
+            const locationInfo = document.getElementById('location-info');
+            const climateInfo = document.getElementById('climate-info');
+            const rainfallInfo = document.getElementById('rainfall-info');
+            const soilIndicator = document.getElementById('soil-indicator');
+            
+            if (state && locationData[state]) {
+                const data = locationData[state];
+                climateInfo.textContent = `Climate: ${data.climate}`;
+                rainfallInfo.textContent = `Annual Rainfall: ${data.rainfall}`;
+                locationInfo.style.display = 'block';
+            }
+        }
+
+        function generateRecommendations() {
+            const state = document.getElementById('state').value;
+            const district = document.getElementById('district').value;
+            const soilType = document.getElementById('soil-type').value;
+            const farmSize = parseFloat(document.getElementById('farm-size').value) || 0;
+            const budget = parseFloat(document.getElementById('investment-budget').value) || 0;
+            
+            // Get price inputs
+            const prices = {
+                rice: parseFloat(document.getElementById('rice-price').value) || 0,
+                wheat: parseFloat(document.getElementById('wheat-price').value) || 0,
+                sugarcane: parseFloat(document.getElementById('sugarcane-price').value) || 0,
+                cotton: parseFloat(document.getElementById('cotton-price').value) || 0,
+                soybean: parseFloat(document.getElementById('soybean-price').value) || 0,
+                maize: parseFloat(document.getElementById('maize-price').value) || 0
+            };
+
+            if (!state || !district || !soilType) {
+                alert('Please fill in all location details');
+                return;
+            }
+
+            // Generate recommendations based on location, soil type, and prices
+            const recommendations = generateCropRecommendations(state, soilType, prices, farmSize, budget);
+            
+            displayRecommendations(recommendations);
+            updateCharts(prices);
+            
+            document.getElementById('recommendations-section').style.display = 'block';
+        }
+
+        function generateCropRecommendations(state, soilType, prices, farmSize, budget) {
+            const recommendations = [];
+            
+            // Base crop data with yield, cost, and suitability
+            const cropData = {
+                rice: { 
+                    yield: 25, cost: 15000, suitability: { clay: 0.9, loamy: 0.8, sandy: 0.3, red: 0.6 },
+                    season: 'Kharif', duration: '120-150 days'
+                },
+                wheat: { 
+                    yield: 30, cost: 12000, suitability: { clay: 0.7, loamy: 0.9, sandy: 0.4, red: 0.8 },
+                    season: 'Rabi', duration: '120-140 days'
+                },
+                sugarcane: { 
+                    yield: 80, cost: 25000, suitability: { clay: 0.8, loamy: 0.9, sandy: 0.6, red: 0.7 },
+                    season: 'Year-round', duration: '12-18 months'
+                },
+                cotton: { 
+                    yield: 15, cost: 18000, suitability: { clay: 0.6, loamy: 0.8, sandy: 0.7, red: 0.9 },
+                    season: 'Kharif', duration: '150-180 days'
+                },
+                soybean: { 
+                    yield: 20, cost: 10000, suitability: { clay: 0.7, loamy: 0.9, sandy: 0.5, red: 0.8 },
+                    season: 'Kharif', duration: '90-120 days'
+                },
+                maize: { 
+                    yield: 35, cost: 8000, suitability: { clay: 0.6, loamy: 0.8, sandy: 0.7, red: 0.7 },
+                    season: 'Kharif', duration: '90-110 days'
+                }
+            };
+
+            // Calculate recommendations
+            Object.keys(cropData).forEach(crop => {
+                const data = cropData[crop];
+                const price = prices[crop];
+                
+                if (price > 0) {
+                    const suitability = data.suitability[soilType] || 0;
+                    const expectedYield = data.yield * suitability * farmSize;
+                    const totalCost = data.cost * farmSize;
+                    const totalRevenue = expectedYield * price;
+                    const profit = totalRevenue - totalCost;
+                    const profitMargin = (profit / totalCost) * 100;
+                    
+                    if (budget === 0 || totalCost <= budget) {
+                        recommendations.push({
+                            crop: crop.charAt(0).toUpperCase() + crop.slice(1),
+                            suitability: Math.round(suitability * 100),
+                            expectedYield: Math.round(expectedYield),
+                            totalCost: Math.round(totalCost),
+                            totalRevenue: Math.round(totalRevenue),
+                            profit: Math.round(profit),
+                            profitMargin: Math.round(profitMargin),
+                            season: data.season,
+                            duration: data.duration,
+                            price: price
+                        });
+                    }
+                }
+            });
+
+            // Sort by profit margin
+            return recommendations.sort((a, b) => b.profitMargin - a.profitMargin);
+        }
+
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
+
+            if (recommendations.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No suitable crops found with current inputs. Please adjust your budget or check price inputs.</div>';
+                return;
+            }
+
+            recommendations.forEach((rec, index) => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                
+                const priority = index < 3 ? '🔥' : '⭐';
+                const profitClass = rec.profitMargin > 20 ? 'alert-success' : rec.profitMargin > 10 ? 'alert-info' : '';
+                
+                card.innerHTML = `
+                    <h3>${priority} ${rec.crop} - ${rec.suitability}% Suitable</h3>
+                    <div class="crop-info">
+                        <div class="crop-info-item">
+                            <div class="label">Expected Yield</div>
+                            <div class="value">${rec.expectedYield} quintals</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Total Investment</div>
+                            <div class="value">₹${rec.totalCost.toLocaleString()}</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Expected Revenue</div>
+                            <div class="value">₹${rec.totalRevenue.toLocaleString()}</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Profit</div>
+                            <div class="value">₹${rec.profit.toLocaleString()}</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Profit Margin</div>
+                            <div class="value">${rec.profitMargin}%</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Season</div>
+                            <div class="value">${rec.season}</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Duration</div>
+                            <div class="value">${rec.duration}</div>
+                        </div>
+                        <div class="crop-info-item">
+                            <div class="label">Market Price</div>
+                            <div class="value">₹${rec.price}/quintal</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function updateCharts(prices) {
+            // Price Comparison Chart
+            const priceCtx = document.getElementById('priceChart').getContext('2d');
+            new Chart(priceCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(prices).map(crop => crop.charAt(0).toUpperCase() + crop.slice(1)),
+                    datasets: [{
+                        label: 'Price per Quintal (₹)',
+                        data: Object.values(prices),
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40'
+                        ],
+                        borderColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Profitability Chart (mock data for demonstration)
+            const profitCtx = document.getElementById('profitChart').getContext('2d');
+            new Chart(profitCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High Profit', 'Medium Profit', 'Low Profit'],
+                    datasets: [{
+                        data: [40, 35, 25],
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize soil type indicator
+        document.getElementById('soil-type').addEventListener('change', function() {
+            const soilType = this.value;
+            const soilIndicator = document.getElementById('soil-indicator');
+            
+            if (soilType) {
+                soilIndicator.className = `soil-type-indicator soil-${soilType}`;
+                soilIndicator.textContent = `${soilType.charAt(0).toUpperCase() + soilType.slice(1)} Soil`;
+            }
+        });
+
+        // Tab switching function
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // AI Assistant Functions
+        function openAIAssistant() {
+            document.getElementById('aiModal').style.display = 'block';
+        }
+
+        function closeAIAssistant() {
+            document.getElementById('aiModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('aiModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // AI Assistant functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiChatMessages = document.getElementById('ai-chat-messages');
+            const aiUserInput = document.getElementById('ai-user-input');
+            const aiSendBtn = document.getElementById('ai-send-btn');
+            const aiQuestionBtns = document.querySelectorAll('.ai-question-btn');
+            
+            // Sample responses database (same as doubtai.html)
+            const aiResponses = {
+                'compost': {
+                    title: 'How to Make Organic Compost',
+                    steps: [
+                        'Choose a shady spot near a water source for your compost pile or bin',
+                        'Add brown materials (dry leaves, twigs) and green materials (vegetable scraps, grass clippings) in equal parts',
+                        'Moisten the pile as you build it - it should be damp like a wrung-out sponge',
+                        'Turn the pile every few weeks with a pitchfork to aerate it',
+                        'Your compost will be ready in 2-6 months when it\'s dark, crumbly, and smells earthy'
+                    ],
+                    tips: [
+                        'Chop larger materials to speed up decomposition',
+                        'Avoid adding meat, dairy, or diseased plants',
+                        'Cover the pile during heavy rain to prevent nutrient leaching'
+                    ]
+                },
+                'pest': {
+                    title: 'Natural Pest Control Methods',
+                    steps: [
+                        'Identify the specific pest causing damage',
+                        'Use companion planting - marigolds repel nematodes, basil repels flies and mosquitoes',
+                        'Make a natural spray with neem oil (2 tbsp), liquid soap (1 tsp), and water (1 gallon)',
+                        'Introduce beneficial insects like ladybugs and lacewings that eat aphids',
+                        'Use physical barriers like row covers or netting'
+                    ],
+                    tips: [
+                        'Plant diverse crops to avoid monoculture that attracts pests',
+                        'Regularly check plants for early signs of infestation',
+                        'Keep your garden clean of debris where pests might hide'
+                    ]
+                },
+                'soil': {
+                    title: 'Improving Soil Health Naturally',
+                    steps: [
+                        'Test your soil to understand its current pH and nutrient levels',
+                        'Add organic matter like compost or well-rotted manure',
+                        'Use cover crops like clover or vetch to fix nitrogen and prevent erosion',
+                        'Practice no-till farming to preserve soil structure and microbial life',
+                        'Apply organic mulch (straw, wood chips) to retain moisture and suppress weeds'
+                    ],
+                    tips: [
+                        'Rotate crops annually to prevent nutrient depletion',
+                        'Use green manure crops that are turned into the soil',
+                        'Maintain proper soil pH (6.0-7.0 for most crops) using lime or sulfur'
+                    ]
+                },
+                'rotation': {
+                    title: 'Effective Crop Rotation',
+                    steps: [
+                        'Group crops by family (nightshades, legumes, brassicas, etc.)',
+                        'Plan a 3-4 year rotation cycle before planting the same family in a bed',
+                        'Follow heavy feeders (tomatoes, corn) with soil builders (beans, peas)',
+                        'Then plant light feeders (onions, carrots) before returning to heavy feeders',
+                        'Keep a garden journal to track what was planted where each season'
+                    ],
+                    tips: [
+                        'Legumes (beans, peas) fix nitrogen in the soil',
+                        'Deep-rooted crops break up compacted soil layers',
+                        'Include cover crops in your rotation plan for fallow periods'
+                    ]
+                },
+                'default': {
+                    title: 'Farming Advice',
+                    steps: [
+                        'I specialize in farming methods and crop management. Could you please provide more details about your specific situation?',
+                        'Please mention: 1) Your crop name, 2) Soil type, 3) Current season, and 4) Specific problem (if any)'
+                    ],
+                    tips: [
+                        'The more details you provide, the better advice I can give',
+                        'Consider your local climate and soil conditions for best results'
+                    ]
+                }
+            };
+            
+            // Function to add message to AI chat
+            function addAIMessage(message, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('ai-message');
+                messageDiv.classList.add(isUser ? 'ai-user-message' : 'ai-bot-message');
+                messageDiv.textContent = message;
+                aiChatMessages.appendChild(messageDiv);
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            }
+            
+            // Function to generate AI response
+            function generateAIResponse(question) {
+                question = question.toLowerCase();
+                
+                let response;
+                if (question.includes('compost')) response = aiResponses.compost;
+                else if (question.includes('pest')) response = aiResponses.pest;
+                else if (question.includes('soil')) response = aiResponses.soil;
+                else if (question.includes('rotation')) response = aiResponses.rotation;
+                else response = aiResponses.default;
+                
+                let fullResponse = `🌱 ${response.title} 🌱\n\n`;
+                
+                fullResponse += "STEP-BY-STEP:\n";
+                response.steps.forEach((step, index) => {
+                    fullResponse += `${index + 1}. ${step}\n`;
+                });
+                
+                fullResponse += "\nEXTRA TIPS:\n";
+                response.tips.forEach((tip, index) => {
+                    fullResponse += `• ${tip}\n`;
+                });
+                
+                fullResponse += "\nRemember: Good farming practices focus on long-term soil health and sustainable methods!";
+                
+                return fullResponse;
+            }
+            
+            // Event listener for AI send button
+            aiSendBtn.addEventListener('click', function() {
+                const question = aiUserInput.value.trim();
+                if (question) {
+                    addAIMessage(question, true);
+                    aiUserInput.value = '';
+                    
+                    // Simulate thinking delay
+                    setTimeout(() => {
+                        const response = generateAIResponse(question);
+                        addAIMessage(response, false);
+                    }, 1000);
+                }
+            });
+            
+            // Event listener for Enter key in AI input
+            aiUserInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    aiSendBtn.click();
+                }
+            });
+            
+            // Event listeners for AI suggested questions
+            aiQuestionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    aiUserInput.value = question;
+                    aiSendBtn.click();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
