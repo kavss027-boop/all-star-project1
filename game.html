@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer's Harvest Run</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #6ab04c, #badc58);
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #game-canvas {
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            width: 100%;
+            height: 100%;
+        }
+
+        #score-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        #score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            text-align: center;
+        }
+
+        #controls p {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            display: none;
+        }
+
+        #game-over h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #f1c40f;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        #final-score {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        #restart-btn {
+            padding: 15px 30px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #restart-btn:hover {
+            background: #2ecc71;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+        }
+
+        #start-screen h1 {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #f1c40f;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        #start-screen p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 80%;
+            text-align: center;
+        }
+
+        #start-btn {
+            padding: 15px 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #start-btn:hover {
+            background: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to bottom, #8B4513, #A0522D);
+            border-top: 5px solid #6D4C41;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div class="ground"></div>
+        
+        <div id="score-container">
+            <div id="score">Money: $0</div>
+        </div>
+        
+        <div id="controls">
+            <p>CONTROLS</p>
+            <p>← → Arrow Keys to Move</p>
+        </div>
+        
+        <div id="game-over">
+            <h2>GAME OVER</h2>
+            <div id="final-score">You earned: $0</div>
+            <button id="restart-btn">PLAY AGAIN</button>
+        </div>
+        
+        <div id="start-screen">
+            <h1>FARMER'S HARVEST RUN</h1>
+            <p>Help the farmer collect crops falling from the sky! Use the left and right arrow keys to move. Each crop collected adds to your money total.</p>
+            <button id="start-btn">START GAME</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.getElementById('score');
+            const finalScoreElement = document.getElementById('final-score');
+            const gameOverScreen = document.getElementById('game-over');
+            const restartBtn = document.getElementById('restart-btn');
+            const startScreen = document.getElementById('start-screen');
+            const startBtn = document.getElementById('start-btn');
+            
+            // Set canvas size
+            canvas.width = 800;
+            canvas.height = 500;
+            
+            // Game variables
+            let gameSpeed = 5;
+            let score = 0;
+            let gameOver = false;
+            let gameStarted = false;
+            let animationId;
+            let frameCount = 0;
+            
+            // Farmer properties
+            const farmer = {
+                x: canvas.width / 2 - 30,
+                y: canvas.height - 150,
+                width: 60,
+                height: 80,
+                speed: 8,
+                moving: 'idle',
+                draw: function() {
+                    // Draw body
+                    ctx.fillStyle = '#27ae60';
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                    
+                    // Draw head
+                    ctx.fillStyle = '#FFD700';
+                    ctx.beginPath();
+                    ctx.arc(this.x + this.width/2, this.y - 20, 25, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw hat
+                    ctx.fillStyle = '#D35400';
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + this.width/2 - 30, this.y - 10);
+                    ctx.lineTo(this.x + this.width/2 + 30, this.y - 10);
+                    ctx.lineTo(this.x + this.width/2 + 20, this.y - 30);
+                    ctx.lineTo(this.x + this.width/2 - 20, this.y - 30);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Draw legs
+                    ctx.fillStyle = '#2980b9';
+                    ctx.fillRect(this.x + 10, this.y + this.height, 15, 30);
+                    ctx.fillRect(this.x + this.width - 25, this.y + this.height, 15, 30);
+                },
+                update: function() {
+                    if (this.moving === 'left' && this.x > 0) {
+                        this.x -= this.speed;
+                    }
+                    if (this.moving === 'right' && this.x < canvas.width - this.width) {
+                        this.x += this.speed;
+                    }
+                }
+            };
+            
+            // Crops array
+            let crops = [];
+            
+            // Crop class
+            class Crop {
+                constructor() {
+                    this.width = 40;
+                    this.height = 40;
+                    this.x = Math.random() * (canvas.width - this.width);
+                    this.y = -this.height;
+                    this.type = Math.floor(Math.random() * 3);
+                    this.colors = ['#f1c40f', '#2ecc71', '#e74c3c'];
+                    this.collected = false;
+                    this.fallSpeed = 3 + Math.random() * 3;
+                }
+                
+                draw() {
+                    if (!this.collected) {
+                        ctx.fillStyle = this.colors[this.type];
+                        ctx.beginPath();
+                        
+                        if (this.type === 0) { // Corn
+                            ctx.rect(this.x, this.y, this.width, this.height);
+                            ctx.fillStyle = '#f1c40f';
+                            ctx.fill();
+                            ctx.strokeStyle = '#000';
+                            ctx.stroke();
+                            
+                            // Draw corn details
+                            ctx.fillStyle = '#000';
+                            for (let i = 0; i < 4; i++) {
+                                ctx.fillRect(this.x + 5 + i*10, this.y + 5, 5, this.height - 10);
+                            }
+                        } else if (this.type === 1) { // Lettuce
+                            ctx.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
+                            ctx.fillStyle = '#2ecc71';
+                            ctx.fill();
+                            ctx.strokeStyle = '#000';
+                            ctx.stroke();
+                        } else { // Tomato
+                            ctx.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
+                            ctx.fillStyle = '#e74c3c';
+                            ctx.fill();
+                            ctx.strokeStyle = '#000';
+                            ctx.stroke();
+                            
+                            // Tomato stem
+                            ctx.fillStyle = '#2ecc71';
+                            ctx.fillRect(this.x + this.width/2 - 2, this.y - 5, 4, 10);
+                        }
+                    }
+                }
+                
+                update() {
+                    this.y += this.fallSpeed;
+                    
+                    // Check for collision with farmer
+                    if (this.x < farmer.x + farmer.width &&
+                        this.x + this.width > farmer.x &&
+                        this.y + this.height > farmer.y &&
+                        this.y < farmer.y + farmer.height &&
+                        !this.collected) {
+                        this.collected = true;
+                        score += 10;
+                        scoreElement.textContent = `Money: $${score}`;
+                    }
+                    
+                    // Remove crops that hit the ground
+                    if (this.y > canvas.height - 80 && !this.collected) {
+                        endGame();
+                    }
+                }
+            }
+            
+            // Clouds array
+            let clouds = [];
+            
+            // Cloud class
+            class Cloud {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * 150;
+                    this.width = 80 + Math.random() * 100;
+                    this.height = 40 + Math.random() * 30;
+                    this.speed = 0.5 + Math.random() * 1.5;
+                }
+                
+                draw() {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.height/2, 0, Math.PI * 2);
+                    ctx.arc(this.x + this.width/3, this.y - this.height/4, this.height/2, 0, Math.PI * 2);
+                    ctx.arc(this.x + this.width/1.5, this.y, this.height/2, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                
+                update() {
+                    this.x -= this.speed;
+                    if (this.x < -this.width) {
+                        this.x = canvas.width + this.width;
+                        this.y = Math.random() * 150;
+                    }
+                }
+            }
+            
+            // Create initial clouds
+            for (let i = 0; i < 5; i++) {
+                clouds.push(new Cloud());
+            }
+            
+            // Handle controls
+            function handleControls(e) {
+                if (!gameStarted || gameOver) return;
+                
+                if (e.key === 'ArrowLeft') {
+                    farmer.moving = 'left';
+                } else if (e.key === 'ArrowRight') {
+                    farmer.moving = 'right';
+                }
+            }
+            
+            function stopMovement() {
+                farmer.moving = 'idle';
+            }
+            
+            // Game loop
+            function animate() {
+                if (gameOver) return;
+                
+                animationId = requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw and update clouds
+                clouds.forEach(cloud => {
+                    cloud.update();
+                    cloud.draw();
+                });
+                
+                // Draw ground
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
+                
+                // Draw ground details
+                ctx.fillStyle = '#6D4C41';
+                for (let i = 0; i < canvas.width; i += 30) {
+                    ctx.fillRect(i, canvas.height - 80, 15, 5);
+                }
+                
+                // Generate crops
+                if (frameCount % 60 === 0) {
+                    crops.push(new Crop());
+                }
+                frameCount++;
+                
+                // Draw and update crops
+                crops.forEach((crop, index) => {
+                    crop.update();
+                    crop.draw();
+                    
+                    // Remove crops that are collected or off-screen
+                    if (crop.collected || crop.y > canvas.height) {
+                        setTimeout(() => {
+                            crops.splice(index, 1);
+                        }, 0);
+                    }
+                });
+                
+                // Update and draw farmer
+                farmer.update();
+                farmer.draw();
+                
+                // Increase game speed over time
+                if (frameCount % 300 === 0) {
+                    gameSpeed += 0.5;
+                }
+            }
+            
+            // End game function
+            function endGame() {
+                gameOver = true;
+                cancelAnimationFrame(animationId);
+                finalScoreElement.textContent = `You earned: $${score}`;
+                gameOverScreen.style.display = 'flex';
+            }
+            
+            // Restart game function
+            function restartGame() {
+                gameOver = false;
+                score = 0;
+                gameSpeed = 5;
+                frameCount = 0;
+                scoreElement.textContent = `Money: $${score}`;
+                crops = [];
+                farmer.x = canvas.width / 2 - 30;
+                farmer.y = canvas.height - 150;
+                gameOverScreen.style.display = 'none';
+                animate();
+            }
+            
+            // Start game function
+            function startGame() {
+                gameStarted = true;
+                startScreen.style.display = 'none';
+                animate();
+            }
+            
+            // Event listeners
+            window.addEventListener('keydown', handleControls);
+            window.addEventListener('keyup', stopMovement);
+            restartBtn.addEventListener('click', restartGame);
+            startBtn.addEventListener('click', startGame);
+            
+            // Draw initial elements
+            farmer.draw();
+            clouds.forEach(cloud => cloud.draw());
+        });
+    </script>
+</body>
+</html>

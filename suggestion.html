@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agricultural Advisor - Crop Recommendation System</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FF9800;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #e68900;
+        }
+        
+        .forecast-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .forecast-item {
+            text-align: center;
+            padding: 1rem;
+            background-color: #e8f5e9;
+            border-radius: 6px;
+        }
+        
+        .crop-recommendation {
+            margin-top: 2rem;
+        }
+        
+        .crop-card {
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f9f9f9;
+        }
+        
+        .pros-cons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .pros, .cons {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        
+        .pros {
+            background-color: #e8f5e9;
+        }
+        
+        .cons {
+            background-color: #ffebee;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .forecast-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .pros-cons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Agricultural Advisor</h1>
+        <p>Expert crop recommendations based on climate forecasts</p>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2>4-Month Climate Forecast</h2>
+            <p>Enter the expected climate conditions for the upcoming growing season:</p>
+            
+            <form id="climate-form">
+                <div class="form-group">
+                    <label for="rainfall">Rainfall (mm per month):</label>
+                    <input type="number" id="rainfall" min="0" max="1000" step="10" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="temperature">Average Temperature (°C):</label>
+                    <input type="number" id="temperature" min="0" max="40" step="0.5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="humidity">Average Humidity (%):</label>
+                    <input type="number" id="humidity" min="0" max="100" step="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="soil-type">Soil Type:</label>
+                    <select id="soil-type" required>
+                        <option value="">Select soil type</option>
+                        <option value="loamy">Loamy</option>
+                        <option value="sandy">Sandy</option>
+                        <option value="clay">Clay</option>
+                        <option value="silt">Silt</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="soil-ph">Soil pH:</label>
+                    <input type="number" id="soil-ph" min="4" max="9" step="0.1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="region">Region/Climate Zone:</label>
+                    <select id="region" required>
+                        <option value="">Select region</option>
+                        <option value="tropical">Tropical</option>
+                        <option value="subtropical">Subtropical</option>
+                        <option value="temperate">Temperate</option>
+                        <option value="arid">Arid</option>
+                    </select>
+                </div>
+                
+                <button type="submit">Analyze & Recommend Crops</button>
+            </form>
+        </div>
+        
+        <div id="results-section" class="hidden">
+            <div class="card">
+                <h2>Climate Analysis</h2>
+                <div class="forecast-summary" id="forecast-summary">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                
+                <div class="analysis" id="climate-analysis">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="card crop-recommendation">
+                <h2>Crop Recommendations</h2>
+                <p>Based on your climate forecast and soil conditions, here are the most suitable crops:</p>
+                
+                <div id="crop-recommendations">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Agricultural Advisor &copy; 2023 | This tool provides recommendations based on generalized agricultural knowledge. Always consult with local agricultural experts for specific advice.</p>
+    </footer>
+
+    <script>
+        document.getElementById('climate-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const rainfall = parseInt(document.getElementById('rainfall').value);
+            const temperature = parseInt(document.getElementById('temperature').value);
+            const humidity = parseInt(document.getElementById('humidity').value);
+            const soilType = document.getElementById('soil-type').value;
+            const soilPh = parseFloat(document.getElementById('soil-ph').value);
+            const region = document.getElementById('region').value;
+            
+            // Analyze climate conditions
+            const analysis = analyzeClimate(rainfall, temperature, humidity, soilType, soilPh, region);
+            
+            // Generate recommendations
+            const recommendations = generateRecommendations(analysis);
+            
+            // Display results
+            displayResults(analysis, recommendations);
+            
+            // Show results section
+            document.getElementById('results-section').classList.remove('hidden');
+            
+            // Scroll to results
+            document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        function analyzeClimate(rainfall, temperature, humidity, soilType, soilPh, region) {
+            let analysis = {
+                rainfallCategory: '',
+                temperatureCategory: '',
+                humidityCategory: '',
+                soilSuitability: {},
+                challenges: [],
+                opportunities: []
+            };
+            
+            // Analyze rainfall
+            if (rainfall < 300) {
+                analysis.rainfallCategory = 'Low';
+                analysis.challenges.push('Low rainfall may require irrigation or drought-resistant crops');
+                analysis.opportunities.push('Suitable for drought-tolerant crops');
+            } else if (rainfall >= 300 && rainfall <= 700) {
+                analysis.rainfallCategory = 'Moderate';
+                analysis.opportunities.push('Adequate rainfall for most crops');
+            } else {
+                analysis.rainfallCategory = 'High';
+                analysis.challenges.push('High rainfall may cause waterlogging; need good drainage');
+                analysis.opportunities.push('Suitable for water-intensive crops');
+            }
+            
+            // Analyze temperature
+            if (temperature < 15) {
+                analysis.temperatureCategory = 'Cool';
+                analysis.challenges.push('Cool temperatures may limit crop choices');
+                analysis.opportunities.push('Ideal for cool-season crops');
+            } else if (temperature >= 15 && temperature <= 27) {
+                analysis.temperatureCategory = 'Moderate';
+                analysis.opportunities.push('Ideal temperatures for most crops');
+            } else {
+                analysis.temperatureCategory = 'Warm';
+                analysis.challenges.push('High temperatures may stress some crops');
+                analysis.opportunities.push('Good for heat-loving crops');
+            }
+            
+            // Analyze humidity
+            if (humidity < 40) {
+                analysis.humidityCategory = 'Low';
+                analysis.challenges.push('Low humidity may increase water requirements');
+            } else if (humidity >= 40 && humidity <= 70) {
+                analysis.humidityCategory = 'Moderate';
+                analysis.opportunities.push('Ideal humidity levels for most crops');
+            } else {
+                analysis.humidityCategory = 'High';
+                analysis.challenges.push('High humidity may increase disease risk');
+            }
+            
+            // Analyze soil conditions
+            analysis.soilSuitability = assessSoilSuitability(soilType, soilPh);
+            
+            return analysis;
+        }
+        
+        function assessSoilSuitability(soilType, soilPh) {
+            const suitability = {};
+            
+            // General soil assessment
+            if (soilType === 'loamy') {
+                suitability.assessment = 'Excellent loamy soil suitable for most crops';
+            } else if (soilType === 'sandy') {
+                suitability.assessment = 'Sandy soil with good drainage but lower water retention';
+            } else if (soilType === 'clay') {
+                suitability.assessment = 'Clay soil with good nutrient retention but poor drainage';
+            } else if (soilType === 'silt') {
+                suitability.assessment = 'Silty soil with good moisture retention';
+            }
+            
+            // pH assessment
+            if (soilPh < 5.5) {
+                suitability.pHAssessment = 'Highly acidic soil - may need liming for most crops';
+            } else if (soilPh >= 5.5 && soilPh < 6.5) {
+                suitability.pHAssessment = 'Slightly acidic soil - ideal for most crops';
+            } else if (soilPh >= 6.5 && soilPh <= 7.5) {
+                suitability.pHAssessment = 'Neutral soil - excellent for most crops';
+            } else if (soilPh > 7.5 && soilPh <= 8.5) {
+                suitability.pHAssessment = 'Alkaline soil - suitable for some crops';
+            } else {
+                suitability.pHAssessment = 'Highly alkaline soil - may need amendments';
+            }
+            
+            return suitability;
+        }
+        
+        function generateRecommendations(analysis) {
+            const crops = [
+                {
+                    name: 'Maize (Corn)',
+                    suitability: 0,
+                    pros: ['High market demand', 'Good yield potential', 'Multiple varieties available'],
+                    cons: ['Requires good soil fertility', 'Moderate to high water needs'],
+                    conditions: {
+                        rainfall: ['Moderate', 'High'],
+                        temperature: ['Moderate', 'Warm'],
+                        humidity: ['Moderate'],
+                        soil: ['loamy'],
+                        pH: [5.5, 7.5]
+                    }
+                },
+                {
+                    name: 'Beans',
+                    suitability: 0,
+                    pros: ['Nitrogen-fixing improves soil', 'Short growing season', 'Good market demand'],
+                    cons: ['Susceptible to fungal diseases in high humidity', 'Need well-drained soil'],
+                    conditions: {
+                        rainfall: ['Moderate'],
+                        temperature: ['Moderate', 'Warm'],
+                        humidity: ['Moderate'],
+                        soil: ['loamy', 'sandy'],
+                        pH: [6.0, 7.0]
+                    }
+                },
+                {
+                    name: 'Sorghum',
+                    suitability: 0,
+                    pros: ['Drought tolerant', 'Grows in poor soils', 'Multiple uses (grain, fodder)'],
+                    cons: ['Lower market price in some regions', 'Bird predation can be issue'],
+                    conditions: {
+                        rainfall: ['Low', 'Moderate'],
+                        temperature: ['Warm'],
+                        humidity: ['Low', 'Moderate'],
+                        soil: ['sandy', 'loamy'],
+                        pH: [5.5, 8.5]
+                    }
+                },
+                {
+                    name: 'Sweet Potatoes',
+                    suitability: 0,
+                    pros: ['Drought resistant', 'High nutritional value', 'Grows in various soils'],
+                    cons: ['Long growing season', 'Vulnerable to weevils'],
+                    conditions: {
+                        rainfall: ['Moderate'],
+                        temperature: ['Warm'],
+                        humidity: ['Moderate'],
+                        soil: ['sandy', 'loamy'],
+                        pH: [5.5, 6.5]
+                    }
+                },
+                {
+                    name: 'Tomatoes',
+                    suitability: 0,
+                    pros: ['High market value', 'Multiple harvests possible', 'Many varieties available'],
+                    cons: ['Disease prone', 'Requires good management', 'Need staking/support'],
+                    conditions: {
+                        rainfall: ['Moderate'],
+                        temperature: ['Moderate', 'Warm'],
+                        humidity: ['Moderate'],
+                        soil: ['loamy'],
+                        pH: [5.5, 7.0]
+                    }
+                }
+            ];
+            
+            // Calculate suitability score for each crop based on conditions
+            crops.forEach(crop => {
+                let score = 0;
+                
+                // Compare with current analysis
+                if (crop.conditions.rainfall.includes(analysis.rainfallCategory)) score += 2;
+                if (crop.conditions.temperature.includes(analysis.temperatureCategory)) score += 2;
+                if (crop.conditions.humidity.includes(analysis.humidityCategory)) score += 1;
+                
+                crop.suitability = score;
+            });
+            
+            // Sort by suitability (descending)
+            crops.sort((a, b) => b.suitability - a.suitability);
+            
+            return crops;
+        }
+        
+        function displayResults(analysis, recommendations) {
+            // Display forecast summary
+            const forecastSummary = document.getElementById('forecast-summary');
+            forecastSummary.innerHTML = `
+                <div class="forecast-item">
+                    <h3>Rainfall</h3>
+                    <p>${document.getElementById('rainfall').value} mm/month</p>
+                    <p><strong>${analysis.rainfallCategory}</strong></p>
+                </div>
+                <div class="forecast-item">
+                    <h3>Temperature</h3>
+                    <p>${document.getElementById('temperature').value}°C</p>
+                    <p><strong>${analysis.temperatureCategory}</strong></p>
+                </div>
+                <div class="forecast-item">
+                    <h3>Humidity</h3>
+                    <p>${document.getElementById('humidity').value}%</p>
+                    <p><strong>${analysis.humidityCategory}</strong></p>
+                </div>
+                <div class="forecast-item">
+                    <h3>Soil Conditions</h3>
+                    <p>${document.getElementById('soil-type').value} soil</p>
+                    <p>pH: ${document.getElementById('soil-ph').value}</p>
+                </div>
+            `;
+            
+            // Display climate analysis
+            const climateAnalysis = document.getElementById('climate-analysis');
+            climateAnalysis.innerHTML = `
+                <h3>Analysis</h3>
+                <p>${analysis.soilSuitability.assessment} ${analysis.soilSuitability.pHAssessment}</p>
+                
+                <h3>Challenges</h3>
+                <ul>
+                    ${analysis.challenges.map(challenge => `<li>${challenge}</li>`).join('')}
+                </ul>
+                
+                <h3>Opportunities</h3>
+                <ul>
+                    ${analysis.opportunities.map(opportunity => `<li>${opportunity}</li>`).join('')}
+                </ul>
+            `;
+            
+            // Display crop recommendations
+            const cropRecommendations = document.getElementById('crop-recommendations');
+            cropRecommendations.innerHTML = '';
+            
+            recommendations.forEach((crop, index) => {
+                const cropCard = document.createElement('div');
+                cropCard.className = 'crop-card';
+                cropCard.innerHTML = `
+                    <h3>${index + 1}. ${crop.name}</h3>
+                    <p>Suitability: ${'★'.repeat(crop.suitability)}${'☆'.repeat(5 - crop.suitability)}</p>
+                    
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>Advantages</h4>
+                            <ul>
+                                ${crop.pros.map(pro => `<li>${pro}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="cons">
+                            <h4>Considerations</h4>
+                            <ul>
+                                ${crop.cons.map(con => `<li>${con}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                cropRecommendations.appendChild(cropCard);
+            });
+        }
+    </script>
+</body>
+</html>

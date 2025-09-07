@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Farming Techniques - FarmEdu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9f1;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #4a8c3b;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+        }
+        
+        /* Back to Home Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background-color: #4a8c3b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: #3a7030;
+        }
+        
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin: 2rem 0;
+            color: #4a8c3b;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: #4a8c3b;
+            border-radius: 2px;
+        }
+        
+        /* Techniques Section */
+        .techniques-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .technique-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .technique-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .technique-image {
+            height: 200px;
+            background-color: #e3edd9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .technique-image i {
+            font-size: 4rem;
+            color: #4a8c3b;
+        }
+        
+        .technique-content {
+            padding: 1.5rem;
+        }
+        
+        .technique-content h3 {
+            color: #4a8c3b;
+            margin-bottom: 1rem;
+        }
+        
+        .technique-content p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .benefits-list {
+            background-color: #f8fbf6;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        
+        .benefits-list h4 {
+            color: #4a8c3b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .benefits-list ul {
+            padding-left: 1.5rem;
+        }
+        
+        .benefits-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #4a8c3b;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 4rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .techniques-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-seedling"></i>
+                    <h1>FarmEdu</h1>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+            
+            <h2 class="page-title">Modern Farming Techniques</h2>
+            <p style="text-align: center; margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                Explore innovative farming methods that increase productivity, sustainability, and profitability. These techniques help farmers adapt to changing environmental conditions and market demands.
+            </p>
+            
+            <div class="techniques-container">
+                <!-- Technique 1 -->
+                <div class="technique-card">
+                    <div class="technique-image">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="technique-content">
+                        <h3>Drip Irrigation</h3>
+                        <p>Drip irrigation is a water-efficient method that delivers water directly to plant roots through a network of valves, pipes, tubing, and emitters.</p>
+                        <div class="benefits-list">
+                            <h4>Key Benefits:</h4>
+                            <ul>
+                                <li>Reduces water usage by 30-50%</li>
+                                <li>Minimizes weed growth</li>
+                                <li>Prevents soil erosion</li>
+                                <li>Improves plant health</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technique 2 -->
+                <div class="technique-card">
+                    <div class="technique-image">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="technique-content">
+                        <h3>Integrated Pest Management</h3>
+                        <p>IPM is an ecosystem-based strategy that focuses on long-term prevention of pests through a combination of techniques.</p>
+                        <div class="benefits-list">
+                            <h4>Key Benefits:</h4>
+                            <ul>
+                                <li>Reduces pesticide use</li>
+                                <li>Decreases pesticide resistance</li>
+                                <li>Protects beneficial insects</li>
+                                <li>Lowers production costs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technique 3 -->
+                <div class="technique-card">
+                    <div class="technique-image">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="technique-content">
+                        <h3>Crop Rotation</h3>
+                        <p>Crop rotation involves growing different types of crops in the same area across different seasons to improve soil health and reduce pest buildup.</p>
+                        <div class="benefits-list">
+                            <h4>Key Benefits:</h4>
+                            <ul>
+                                <li>Improves soil fertility</li>
+                                <li>Reduces soil erosion</li>
+                                <li>Breaks pest cycles</li>
+                                <li>Increases crop yield</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technique 4 -->
+                <div class="technique-card">
+                    <div class="technique-image">
+                        <i class="fas fa-hand-holding-water"></i>
+                    </div>
+                    <div class="technique-content">
+                        <h3>Conservation Tillage</h3>
+                        <p>Conservation tillage minimizes soil disturbance by reducing how often and how intensely fields are tilled, preserving soil structure and organic matter.</p>
+                        <div class="benefits-list">
+                            <h4>Key Benefits:</h4>
+                            <ul>
+                                <li>Reduces soil erosion</li>
+                                <li>Improves water retention</li>
+                                <li>Saves time and fuel costs</li>
+                                <li>Increases soil biodiversity</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technique 5 -->
+                <div class="technique-card">
+                    <div class="technique-image">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="technique-content">
+                        <h3>Precision Agriculture</h3>
+                        <p>Precision agriculture uses technology like GPS, sensors, and data analytics to optimize field-level management regarding crop farming.</p>
+                        <div class="benefits-list">
+                            <h4>Key Benefits:</h4>
+                            <ul>
+                                <li>Increases efficiency</li>
+                                <li>Reduces waste</li>
+                                <li>Improves decision making</li>
+                                <li>Enhances profitability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technique 6 -->
+                <div class="technique-card">
+                    <div class="technique-image">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <div class="technique-content">
+                        <h3>Agroforestry</h3>
+                        <p>Agroforestry integrates trees and shrubs into crop and animal farming systems to create environmental, economic, and social benefits.</p>
+                        <div class="benefits-list">
+                            <h4>Key Benefits:</h4>
+                            <ul>
+                                <li>Enhances biodiversity</li>
+                                <li>Improves soil structure</li>
+                                <li>Provides additional income</li>
+                                <li>Creates microclimates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 FarmEdu - Farmer Education Portal. All rights reserved.</p>
+            <p>Contact: info@farmedu.com | Helpline: +91 1800-123-4567</p>
+        </div>
+    </footer>
+</body>
+</html>

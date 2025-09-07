@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FramEdu - Agriculture Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .logo {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #2575fc;
+            letter-spacing: 1px;
+        }
+
+        .navbar .nav-links a {
+            margin-left: 28px;
+            text-decoration: none;
+            color: #2575fc;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            padding: 8px 18px;
+            border-radius: 6px;
+        }
+
+        .navbar .nav-links a:hover {
+            background: #2575fc;
+            color: #fff;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .quiz-header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .quiz-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+        }
+
+        .option.correct {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+            animation: correctAnswer 0.6s ease;
+        }
+
+        .option.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+            animation: incorrectAnswer 0.6s ease;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+            accent-color: #667eea;
+        }
+
+        .option-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result-container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-score {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .quiz-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .quiz-card {
+                padding: 25px;
+                margin: 20px;
+            }
+
+            .question-text {
+                font-size: 1.4rem;
+            }
+
+            .option {
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i> FramEdu
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="crops.html">Crops</a>
+            <a href="farmer-dashboard.html">Dashboard</a>
+            <a href="suggestion.html">Suggestions</a>
+            <a href="quiz.html">Quiz</a>
+        </div>
+    </nav>
+
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1><i class="fas fa-graduation-cap"></i> Agriculture Quiz</h1>
+            <p>Test your farming knowledge and learn new techniques!</p>
+        </div>
+
+        <div class="quiz-card" id="quizCard">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Question 1 of 10</div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number" id="questionNumber">Question 1</div>
+                <div class="question-text" id="questionText">Loading question...</div>
+            </div>
+
+            <div class="options-container" id="optionsContainer">
+                <!-- Options will be dynamically generated -->
+            </div>
+
+            <div class="btn-container">
+                <button class="btn" id="submitBtn" onclick="submitAnswer()" disabled>
+                    <i class="fas fa-paper-plane"></i> Submit Answer
+                </button>
+            </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title" id="resultTitle">Congratulations!</div>
+            <div class="result-score" id="resultScore">You scored 8/10</div>
+            <button class="restart-btn" onclick="restartQuiz()">
+                <i class="fas fa-redo"></i> Try Again
+            </button>
+            <a href="farmer-dashboard.html" class="home-btn">
+                <i class="fas fa-home"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "What is the primary purpose of crop rotation?",
+                options: [
+                    "To increase water usage",
+                    "To improve soil fertility and reduce pest buildup",
+                    "To decrease crop yield",
+                    "To use more pesticides"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which farming technique helps conserve water by delivering it directly to plant roots?",
+                options: [
+                    "Flood irrigation",
+                    "Drip irrigation",
+                    "Sprinkler irrigation",
+                    "Manual watering"
+                ],
+                correct: 1
+            },
+            {
+                question: "What does IPM stand for in agriculture?",
+                options: [
+                    "Integrated Pest Management",
+                    "Intensive Plant Monitoring",
+                    "International Plant Market",
+                    "Internal Plant Maintenance"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which soil type is best for growing rice?",
+                options: [
+                    "Sandy soil",
+                    "Clay soil",
+                    "Rocky soil",
+                    "Desert soil"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the main benefit of organic farming?",
+                options: [
+                    "Higher chemical usage",
+                    "Better soil health and environmental sustainability",
+                    "Faster crop growth",
+                    "Lower initial investment"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which crop is known as the 'King of Cereals'?",
+                options: [
+                    "Wheat",
+                    "Rice",
+                    "Maize",
+                    "Barley"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the ideal pH range for most crops?",
+                options: [
+                    "3.0 - 4.0",
+                    "6.0 - 7.0",
+                    "8.0 - 9.0",
+                    "10.0 - 11.0"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which farming practice helps prevent soil erosion?",
+                options: [
+                    "Deep plowing",
+                    "Monoculture",
+                    "Cover cropping",
+                    "Excessive tilling"
+                ],
+                correct: 2
+            },
+            {
+                question: "What is the primary function of nitrogen in plants?",
+                options: [
+                    "Root development",
+                    "Leaf and stem growth",
+                    "Flower production",
+                    "Fruit ripening"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which season is best for sowing wheat in India?",
+                options: [
+                    "Kharif (Monsoon)",
+                    "Rabi (Winter)",
+                    "Zaid (Summer)",
+                    "Any season"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let quizCompleted = false;
+
+        // Initialize quiz
+        function initQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            quizCompleted = false;
+            document.getElementById('quizCard').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            showQuestion();
+        }
+
+        // Show current question
+        function showQuestion() {
+            const question = quizData[currentQuestion];
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerHTML = `
+                    <input type="radio" name="answer" value="${index}" id="option${index}" onchange="selectAnswer(${index})">
+                    <label class="option-label" for="option${index}">${option}</label>
+                `;
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            document.getElementById('submitBtn').disabled = true;
+            selectedAnswer = null;
+        }
+
+        // Select answer
+        function selectAnswer(answerIndex) {
+            selectedAnswer = answerIndex;
+            document.getElementById('submitBtn').disabled = false;
+            
+            // Remove previous selections
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selection to current option
+            document.querySelectorAll('.option')[answerIndex].classList.add('selected');
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            if (selectedAnswer === null) return;
+            
+            const question = quizData[currentQuestion];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            // Show correct/incorrect feedback
+            document.querySelectorAll('.option').forEach((option, index) => {
+                option.classList.remove('selected');
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Disable submit button
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Move to next question after delay
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }, 2000);
+        }
+
+        // Show results
+        function showResults() {
+            document.getElementById('quizCard').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            const percentage = (score / quizData.length) * 100;
+            let resultIcon, resultTitle;
+            
+            if (percentage >= 80) {
+                resultIcon = '🏆';
+                resultTitle = 'Excellent!';
+            } else if (percentage >= 60) {
+                resultIcon = '👍';
+                resultTitle = 'Good Job!';
+            } else {
+                resultIcon = '📚';
+                resultTitle = 'Keep Learning!';
+            }
+            
+            document.getElementById('resultIcon').textContent = resultIcon;
+            document.getElementById('resultTitle').textContent = resultTitle;
+            document.getElementById('resultScore').textContent = `You scored ${score}/${quizData.length} (${percentage.toFixed(0)}%)`;
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initQuiz();
+        });
+    </script>
+</body>
+</html>

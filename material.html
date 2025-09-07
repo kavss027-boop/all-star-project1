@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic Farming Materials Price Comparison</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FF9800;
+            --light-color: #f5f9f5;
+            --dark-color: #2E7D32;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .price-tag {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            font-weight: bold;
+        }
+        
+        .discount-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .platform-logo {
+            height: 30px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .btn-buy {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-buy:hover {
+            background-color: var(--dark-color);
+        }
+        
+        .material-image {
+            height: 120px;
+            object-fit: cover;
+        }
+        
+        .filter-section {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .platform-filter {
+            margin-bottom: 15px;
+        }
+        
+        .platform-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-leaf me-2"></i>FarmDeal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Government Schemes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Farming Tips</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Organic Farming Materials at Lowest Prices</h1>
+            <p class="lead">Compare prices from multiple platforms and find the best deals for your farming needs</p>
+            <a href="#products" class="btn btn-lg btn-warning mt-3">Explore Products</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h3 class="mb-4">Filter Products</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="materialSelect" class="form-label">Select Material</label>
+                        <select class="form-select" id="materialSelect">
+                            <option value="all">All Materials</option>
+                            <option value="compost">Compost</option>
+                            <option value="vermicompost">Vermicompost</option>
+                            <option value="cow_dung">Cow Dung Manure</option>
+                            <option value="neem_oil">Neem Oil</option>
+                            <option value="biofertilizer">Biofertilizers</option>
+                            <option value="biopesticide">Biopesticides</option>
+                            <option value="seeds">Seeds</option>
+                            <option value="green_manure">Green Manure Crops</option>
+                            <option value="drip_irrigation">Drip Irrigation Kits</option>
+                            <option value="mulching_sheets">Mulching Sheets</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Platforms</label>
+                    <div class="platform-filter">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input platform-check" type="checkbox" value="amazon" id="amazonCheck" checked>
+                            <label class="form-check-label" for="amazonCheck">
+                                <i class="fab fa-amazon platform-icon"></i>Amazon
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input platform-check" type="checkbox" value="flipkart" id="flipkartCheck" checked>
+                            <label class="form-check-label" for="flipkartCheck">
+                                <i class="fas fa-shopping-cart platform-icon"></i>Flipkart
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input platform-check" type="checkbox" value="indiamart" id="indiamartCheck" checked>
+                            <label class="form-check-label" for="indiamartCheck">
+                                <i class="fas fa-store platform-icon"></i>IndiaMART
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input platform-check" type="checkbox" value="government" id="govCheck" checked>
+                            <label class="form-check-label" for="govCheck">
+                                <i class="fas fa-landmark platform-icon"></i>Government
+                            </label>
+                        </div>
+                    </div>
+                    <button id="filterBtn" class="btn btn-success mt-3">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <h2 id="products" class="mb-4">Available Products</h2>
+        <div class="row" id="productContainer">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>FarmDeal</h5>
+                    <p>Helping farmers find the best deals for organic farming materials since 2023.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Government Schemes</a></li>
+                        <li><a href="#" class="text-white">Farming Tips</a></li>
+                        <li><a href="#" class="text-white">Seasonal Recommendations</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <p><i class="fas fa-phone me-2"></i>+91 1800-XXX-XXXX</p>
+                    <p><i class="fas fa-envelope me-2"></i>info@farmdeal.com</p>
+                </div>
+            </div>
+            <hr class="mt-4 bg-light">
+            <p class="text-center mb-0">© 2023 FarmDeal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample product data with corrected images
+        const products = [
+            {
+                id: 1,
+                name: "Organic Vermicompost",
+                price: 12,
+                unit: "per kg",
+                platform: "Amazon",
+                link: "https://amazon.com",
+                image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Bulk discount available",
+                material: "vermicompost"
+            },
+            {
+                id: 2,
+                name: "Neem Oil Bio Pesticide",
+                price: 250,
+                unit: "per liter",
+                platform: "Flipkart",
+                link: "https://flipkart.com",
+                image: "https://images.unsplash.com/photo-1611934180042-b794d31b3c46?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "5% off on 5+ items",
+                material: "neem_oil"
+            },
+            {
+                id: 3,
+                name: "Cow Dung Manure",
+                price: 8,
+                unit: "per kg",
+                platform: "IndiaMART",
+                link: "https://indiamart.com",
+                image: "https://images.unsplash.com/photo-1596892154244-7c8d57bb3c99?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Free delivery",
+                material: "cow_dung"
+            },
+            {
+                id: 4,
+                name: "Drip Irrigation Kit",
+                price: 2499,
+                unit: "per kit",
+                platform: "Government",
+                link: "#",
+                image: "https://images.unsplash.com/photo-1590172205846-698b2b96ec53?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "50% subsidy under PMKSY",
+                material: "drip_irrigation"
+            },
+            {
+                id: 5,
+                name: "Organic Mulching Sheets",
+                price: 450,
+                unit: "per roll",
+                platform: "Amazon",
+                link: "https://amazon.com",
+                image: "https://images.unsplash.com/photo-1621863075151-dc53186c96df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Buy 2 get 1 free",
+                material: "mulching_sheets"
+            },
+            {
+                id: 6,
+                name: "Biofertilizer Pack",
+                price: 180,
+                unit: "per kg",
+                platform: "Government",
+                link: "#",
+                image: "https://images.unsplash.com/photo-1551933929-5164e1ca5a2c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Subsidy available for small farmers",
+                material: "biofertilizer"
+            },
+            {
+                id: 7,
+                name: "Organic Compost",
+                price: 10,
+                unit: "per kg",
+                platform: "Flipkart",
+                link: "https://flipkart.com",
+                image: "https://images.unsplash.com/photo-1589923188937-cb64779f4abe?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "10% off on orders above 100kg",
+                material: "compost"
+            },
+            {
+                id: 8,
+                name: "Green Manure Seeds",
+                price: 320,
+                unit: "per kg",
+                platform: "IndiaMART",
+                link: "https://indiamart.com",
+                image: "https://images.unsplash.com/photo-1590172205846-698b2b96ec53?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Free shipping",
+                material: "green_manure"
+            },
+            {
+                id: 9,
+                name: "Organic Biopesticide",
+                price: 380,
+                unit: "per liter",
+                platform: "Amazon",
+                link: "https://amazon.com",
+                image: "https://images.unsplash.com/photo-1589923188937-cb64779f4abe?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Buy 1 get 1 free",
+                material: "biopesticide"
+            },
+            {
+                id: 10,
+                name: "Heirloom Seeds Pack",
+                price: 150,
+                unit: "per pack",
+                platform: "Government",
+                link: "#",
+                image: "https://images.unsplash.com/photo-1590172205846-698b2b96ec53?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                discount: "Subsidized for registered farmers",
+                material: "seeds"
+            }
+        ];
+
+        // Function to render products
+        function renderProducts(productsToRender) {
+            const container = document.getElementById('productContainer');
+            container.innerHTML = '';
+            
+            if (productsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                        <h3 class="text-muted">No products found</h3>
+                        <p>Try changing your filters to see more results</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsToRender.forEach(product => {
+                const card = `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            <img src="${product.image}" class="card-img-top material-image" alt="${product.name}">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">${product.name}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="price-tag">₹${product.price} ${product.unit}</span>
+                                    <span class="badge bg-info">${product.platform}</span>
+                                </div>
+                                <p class="text-success"><i class="fas fa-tag me-2"></i>${product.discount}</p>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <a href="${product.link}" target="_blank" class="btn btn-buy w-100">
+                                    <i class="fas fa-shopping-cart me-2"></i>Buy Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // Function to filter products
+        function filterProducts() {
+            const materialSelect = document.getElementById('materialSelect');
+            const selectedMaterial = materialSelect.value;
+            
+            const platformChecks = document.querySelectorAll('.platform-check:checked');
+            const selectedPlatforms = Array.from(platformChecks).map(check => check.value);
+            
+            let filteredProducts = products;
+            
+            // Filter by material
+            if (selectedMaterial !== 'all') {
+                filteredProducts = filteredProducts.filter(product => product.material === selectedMaterial);
+            }
+            
+            // Filter by platform
+            filteredProducts = filteredProducts.filter(product => {
+                const platform = product.platform.toLowerCase();
+                return selectedPlatforms.includes(platform) || 
+                       (platform === 'government' && selectedPlatforms.includes('government'));
+            });
+            
+            // Sort by price (low to high)
+            filteredProducts.sort((a, b) => a.price - b.price);
+            
+            renderProducts(filteredProducts);
+        }
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts(products);
+            
+            // Add event listeners
+            document.getElementById('filterBtn').addEventListener('click', filterProducts);
+            document.getElementById('materialSelect').addEventListener('change', filterProducts);
+            
+            document.querySelectorAll('.platform-check').forEach(check => {
+                check.addEventListener('change', filterProducts);
+            });
+        });
+    </script>
+</body>
+</html>
